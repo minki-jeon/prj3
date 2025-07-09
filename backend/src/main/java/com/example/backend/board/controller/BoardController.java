@@ -1,6 +1,7 @@
 package com.example.backend.board.controller;
 
 import com.example.backend.board.dto.BoardDto;
+import com.example.backend.board.dto.BoardListInfo;
 import com.example.backend.board.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,9 +21,8 @@ public class BoardController {
     private final BoardService boardService;
 
     @GetMapping("list")
-    public ResponseEntity<List<BoardDto>> getAllBoards() {
-        System.out.println("BoardController.getAllBoards");
-        return null;
+    public List<BoardListInfo> getAllBoards() {
+        return boardService.list();
     }
 
     @PostMapping("add")
