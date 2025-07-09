@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Spinner, Table } from "react-bootstrap";
+import { useNavigate } from "react-router";
 
 export function BoardList() {
   const [boardList, setBoardList] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // 마운트될 때 (initial render 시) 실행되는 코드
@@ -26,7 +28,8 @@ export function BoardList() {
   }
 
   function handleTableRowClick(id) {
-
+    // 게시물 상세 보기 이동
+    navigate(`/board/${id}`);
   }
 
   return (
@@ -35,30 +38,30 @@ export function BoardList() {
       {boardList.length > 0 ? (
         <Table striped={true} hover={true}>
           <thead>
-          <tr>
-            <th style={{ width: "90px" }}>번호</th>
-            <th>제목</th>
-            <th className="d-none d-md-table-cell" style={{ width: "200px" }}>
-              작성자
-            </th>
-            <th className="d-none d-lg-table-cell" style={{ width: "200px" }}>
-              작성일시
-            </th>
-          </tr>
+            <tr>
+              <th style={{ width: "90px" }}>번호</th>
+              <th>제목</th>
+              <th className="d-none d-md-table-cell" style={{ width: "200px" }}>
+                작성자
+              </th>
+              <th className="d-none d-lg-table-cell" style={{ width: "200px" }}>
+                작성일시
+              </th>
+            </tr>
           </thead>
           <tbody>
-          {boardList.map((board) => (
-            <tr
-              key={board.id}
-              style={{ cursor: "pointer" }}
-              onClick={() => handleTableRowClick(board.id)}
-            >
-              <td>{board.id}</td>
-              <td>{board.title}</td>
-              <td className="d-none d-md-table-cell">{board.author}</td>
-              <td className="d-none d-lg-table-cell">{board.timesAgo}</td>
-            </tr>
-          ))}
+            {boardList.map((board) => (
+              <tr
+                key={board.id}
+                style={{ cursor: "pointer" }}
+                onClick={() => handleTableRowClick(board.id)}
+              >
+                <td>{board.id}</td>
+                <td>{board.title}</td>
+                <td className="d-none d-md-table-cell">{board.author}</td>
+                <td className="d-none d-lg-table-cell">{board.timesAgo}</td>
+              </tr>
+            ))}
           </tbody>
         </Table>
       ) : (
