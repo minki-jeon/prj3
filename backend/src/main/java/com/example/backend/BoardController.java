@@ -10,9 +10,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("/api/board")
 public class BoardController {
 
+    private BoardService boardService;
+
     @PostMapping("add")
     @ResponseBody
     public String add(@RequestBody BoardDto dto) {
+        // service
+        boardService.add(dto);
         System.out.println(dto);
 
         return null;
