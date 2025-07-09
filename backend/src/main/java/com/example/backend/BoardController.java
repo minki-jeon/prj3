@@ -24,6 +24,6 @@ public class BoardController {
         boardService.add(dto);
 
         return ResponseEntity.ok().body(Map.of("message",
-                Map.of("code", "success", "text", "새 글이 등록되었습니다.")));
+                Map.of("type", "success", "text", "새 글이 등록되었습니다.")));
     }
 }

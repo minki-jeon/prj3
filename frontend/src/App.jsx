@@ -1,6 +1,7 @@
 import { BrowserRouter, Link, Outlet, Route, Routes } from "react-router";
 import { useState } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 function MainLayout() {
   return (
@@ -38,7 +39,12 @@ function BoardAdd() {
         author: author,
       })
       .then((res) => {
-        console.log("잘 되면 실행되는 코드");
+        const message = res.data.message;
+        if (message) {
+          // toast 띄우기
+          toast(message.text, { type: message.type });
+        }
+        // "/"로 이동
       })
       .catch((err) => {
         console.log("잘 안되면 실행되는 코드");
