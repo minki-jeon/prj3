@@ -63,4 +63,17 @@ public class BoardService {
     public void deleteById(Integer id) {
         boardRepository.deleteById(id);
     }
+
+    public void update(BoardDto boardDto) {
+        // 조회
+        Board dbData = boardRepository.findById(boardDto.getId()).get();
+
+        // 변경
+        dbData.setTitle(boardDto.getTitle());
+        dbData.setContent(boardDto.getContent());
+        dbData.setAuthor(boardDto.getAuthor());
+
+        // 저장
+        boardRepository.save(dbData);
+    }
 }
