@@ -19,7 +19,7 @@ export function BoardDetail() {
   useEffect(() => {
     // axios로 해당 게시물 가져오기
     axios
-      .get(`/api/boards/${id}`)
+      .get(`/api/board/${id}`)
       .then((res) => {
         console.log("동작 성공");
         setBoard(res.data);
