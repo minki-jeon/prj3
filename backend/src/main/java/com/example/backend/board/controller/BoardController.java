@@ -24,7 +24,7 @@ public class BoardController {
     public ResponseEntity<?> deleteBoard(@PathVariable Integer id) {
         boardService.deleteById(id);
         return ResponseEntity.ok().body(Map.of("message",
-                Map.of("type", "success", "text", "번 게시물이 삭제 되었습니다.")));
+                Map.of("type", "success", "text", id + " 번 게시물이 삭제 되었습니다.")));
     }
 
     @GetMapping("{id}")
