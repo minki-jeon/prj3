@@ -8,6 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional
 public class BoardService {
+
+    private final BoardRepository boardRepository;
+
     public void add(BoardDto dto) {
         // Entity에 DTO의 값들을 저장하고
         Board board = new Board();
@@ -16,6 +19,7 @@ public class BoardService {
         board.setAuthor(dto.getAuthor());
 
         // Repository에서 Save 실행
+        boardRepository.save(board);
 
 
     }
