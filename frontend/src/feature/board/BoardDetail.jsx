@@ -106,7 +106,12 @@ export function BoardDetail() {
           >
             삭제
           </Button>
-          <Button variant="outline-info">수정</Button>
+          <Button
+            variant="outline-info"
+            onClick={() => navigate(`/board/edit?id=${board.id}`)}
+          >
+            수정
+          </Button>
         </div>
       </Col>
 
