@@ -1,4 +1,11 @@
-import { BrowserRouter, Link, Outlet, Route, Routes } from "react-router";
+import {
+  BrowserRouter,
+  Link,
+  Outlet,
+  Route,
+  Routes,
+  useNavigate,
+} from "react-router";
 import { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -31,6 +38,8 @@ function BoardAdd() {
   const [content, setContent] = useState("");
   const [author, setAuthor] = useState("");
 
+  const navigate = useNavigate();
+
   function handleSaveButtonClick() {
     axios
       .post("/api/board/add", {
@@ -45,6 +54,7 @@ function BoardAdd() {
           toast(message.text, { type: message.type });
         }
         // "/"로 이동
+        navigate("/");
       })
       .catch((err) => {
         console.log("잘 안되면 실행되는 코드");
