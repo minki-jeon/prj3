@@ -7,3 +7,13 @@ CREATE TABLE board
     inserted_at datetime           NOT NULL DEFAULT NOW(),
     CONSTRAINT pk_board PRIMARY KEY (id)
 );
+
+CREATE TABLE member
+(
+    email       VARCHAR(255) NOT NULL,
+    password    VARCHAR(255) NOT NULL,
+    nick_name   VARCHAR(255) NOT NULL,
+    info        VARCHAR(255) NULL,
+    inserted_at datetime     NOT NULL DEFAULT NOW(),
+    CONSTRAINT pk_member PRIMARY KEY (email)
+);
