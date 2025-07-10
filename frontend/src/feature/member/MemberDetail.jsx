@@ -54,8 +54,12 @@ export function MemberDetail() {
           </FormGroup>
         </div>
         <div>
-          <Button variant="outline-danger">회원 탈퇴</Button>
-          <Button variant="outline-info">회원 수정</Button>
+          <Button variant="outline-danger" size="sm" className="me-2">
+            회원 탈퇴
+          </Button>
+          <Button variant="outline-info" size="sm" className="me-2">
+            회원 수정
+          </Button>
         </div>
       </Col>
     </Row>
