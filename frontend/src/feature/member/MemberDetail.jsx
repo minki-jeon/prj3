@@ -100,7 +100,12 @@ export function MemberDetail() {
           >
             회원 탈퇴
           </Button>
-          <Button variant="outline-info" size="sm" className="me-2">
+          <Button
+            variant="outline-info"
+            size="sm"
+            className="me-2"
+            onClick={() => navigate(`/member/edit?email=${member.email}`)}
+          >
             회원 수정
           </Button>
         </div>
