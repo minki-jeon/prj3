@@ -4,6 +4,7 @@ import {
   FormControl,
   FormGroup,
   FormLabel,
+  FormText,
   Row,
   Spinner,
 } from "react-bootstrap";
@@ -17,6 +18,7 @@ export function MemberAdd() {
   const [nickName, setNickName] = useState("");
   const [info, setInfo] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
+  const [password2, setPassword2] = useState("");
 
   function handleSaveClick() {
     // post /api/member/add, {email, password, nickName, info}
@@ -54,6 +56,12 @@ export function MemberAdd() {
     disabled = true;
   }
 
+  let passwordConfirm = true;
+  if (password !== password2) {
+    disabled = true;
+    passwordConfirm = false;
+  }
+
   return (
     <Row className="justify-content-center">
       <Col xs={12} md={8} lg={6}>
@@ -83,7 +91,16 @@ export function MemberAdd() {
           <FormGroup className="mb-3" controlId="password2">
             {/* TODO: 나중에 적용 */}
             <FormLabel>암호 확인</FormLabel>
-            <FormControl type="text" />
+            <FormControl
+              type="text"
+              value={password2}
+              onChange={(e) => setPassword2(e.target.value)}
+            />
+            {passwordConfirm || (
+              <FormText className="text-danger">
+                패스워드가 일치하지 않습니다.
+              </FormText>
+            )}
           </FormGroup>
         </div>
         <div>
