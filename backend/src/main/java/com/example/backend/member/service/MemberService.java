@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 @Service
@@ -33,6 +34,14 @@ public class MemberService {
     private boolean validate(MemberForm memberForm) {
         // email 중복 체크
         // nickname 중복 체크
+        Optional<Member> dbDataEmail = memberRepository.findById(memberForm.getEmail());
+        if (dbDataEmail.isPresent()) {
+            throw new RuntimeException("이미 가입된 이메일입니다.");
+        }
+        Optional<Member> dbDataName = memberRepository.findByNickName(memberForm.getNickName());
+        if (dbDataName.isPresent()) {
+            throw new RuntimeException("이미 사용 중인 별명입니다.");
+        }
 
         // email 입력 유무
         // email 형식 체크
