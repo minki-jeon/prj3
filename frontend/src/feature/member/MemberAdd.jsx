@@ -11,14 +11,16 @@ import {
 import { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router";
 
 export function MemberAdd() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [password2, setPassword2] = useState("");
   const [nickName, setNickName] = useState("");
   const [info, setInfo] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
-  const [password2, setPassword2] = useState("");
+  const navigate = useNavigate();
 
   function handleSaveClick() {
     // post /api/member/add, {email, password, nickName, info}
@@ -37,6 +39,7 @@ export function MemberAdd() {
         if (message) {
           toast(message.text, { type: message.type });
         }
+        navigate("/");
       })
       .catch((err) => {
         console.log("error");
@@ -114,7 +117,7 @@ export function MemberAdd() {
           </FormGroup>
         </div>
         <div>
-          <FormGroup controlId="info">
+          <FormGroup className="mb-3" controlId="info">
             <FormLabel>자기소개</FormLabel>
             <FormControl
               type="textarea"
