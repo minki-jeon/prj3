@@ -82,6 +82,16 @@ export function MemberDetail() {
           </FormGroup>
         </div>
         <div>
+          <FormGroup controlId="inserted1" className="mb-3">
+            <FormLabel>가입일시</FormLabel>
+            <FormControl
+              type="datetime-local"
+              readOnly
+              value={member.insertedAt}
+            />
+          </FormGroup>
+        </div>
+        <div>
           <Button
             variant="outline-danger"
             size="sm"
