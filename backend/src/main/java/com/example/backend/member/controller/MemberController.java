@@ -19,6 +19,25 @@ public class MemberController {
 
     private final MemberService memberService;
 
+    @DeleteMapping
+    public ResponseEntity<?> deleteMember(@RequestBody MemberForm memberForm) {
+        System.out.println(memberForm);
+        try {
+            memberService.delete(memberForm);
+        } catch (Exception e) {
+            e.printStackTrace();
+            String message = e.getMessage();
+            // 403 : 권한 없음
+            // 401 : 로그인 실패
+            return ResponseEntity.status(403).body(Map.of("message",
+                    Map.of("type", "error", "text", message))
+            );
+        }
+        return ResponseEntity.ok().body(Map.of("message",
+                Map.of("type", "success", "text", "회원 정보가 삭제되었습니다."))
+        );
+    }
+
     @GetMapping(params = "email")
     public MemberDto getMember(String email) {
         return memberService.get(email);
