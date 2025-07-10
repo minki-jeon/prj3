@@ -5,6 +5,7 @@ import {
   FormGroup,
   FormLabel,
   Row,
+  Spinner,
 } from "react-bootstrap";
 import { useState } from "react";
 import axios from "axios";
@@ -15,9 +16,12 @@ export function MemberAdd() {
   const [password, setPassword] = useState("");
   const [nickName, setNickName] = useState("");
   const [info, setInfo] = useState("");
+  const [isProcessing, setIsProcessing] = useState(false);
 
   function handleSaveClick() {
     // post /api/member/add, {email, password, nickName, info}
+    setIsProcessing(true);
+
     axios
       .post("/api/member/add", {
         email: email,
@@ -41,6 +45,7 @@ export function MemberAdd() {
       })
       .finally(() => {
         console.log("finally");
+        setIsProcessing(false);
       });
   }
 
@@ -98,7 +103,10 @@ export function MemberAdd() {
           </FormGroup>
         </div>
         <div>
-          <Button onClick={handleSaveClick}>가입</Button>
+          <Button onClick={handleSaveClick} disabled={isProcessing}>
+            {isProcessing && <Spinner size="sm" />}
+            가입
+          </Button>
         </div>
       </Col>
     </Row>
