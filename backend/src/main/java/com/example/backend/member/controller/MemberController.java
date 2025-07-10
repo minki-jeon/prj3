@@ -19,6 +19,28 @@ public class MemberController {
 
     private final MemberService memberService;
 
+    @DeleteMapping("{email}")
+    public ResponseEntity<?> deleteMember(@PathVariable String email) {
+        memberService.deleteById(email);
+        return ResponseEntity.ok().body(Map.of("message",
+                Map.of("type", "success", "text", email + " 님, 정상적으로 탈퇴되었습니다.")));
+    }
+
+    @PostMapping("delete")
+    public ResponseEntity<?> deleteMemberCheck(@RequestBody String email, @RequestBody String password) {
+        System.out.println("email = " + email);
+        System.out.println("password = " + password);
+        MemberForm dbData = memberService.getMember(email);
+        String dbPassword = dbData.getPassword();
+
+        if (dbPassword.equals(password)) {
+            deleteMember(email);
+        }
+
+        return ResponseEntity.ok().body(Map.of("message",
+                Map.of("type", "error", "text", "입력한 암호가 일치하지 않습니다.")));
+    }
+
     @GetMapping(params = "email")
     public MemberDto getMember(String email) {
         return memberService.get(email);

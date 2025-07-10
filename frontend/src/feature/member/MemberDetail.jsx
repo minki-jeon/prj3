@@ -1,19 +1,25 @@
 import {
   Button,
   Col,
+  FloatingLabel,
   FormControl,
   FormGroup,
   FormLabel,
+  Modal,
   Row,
   Spinner,
 } from "react-bootstrap";
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router";
+import { Form, useNavigate, useSearchParams } from "react-router";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 export function MemberDetail() {
   const [member, setMember] = useState(null);
   const [params] = useSearchParams();
+  const [modalShow, setModalShow] = useState(false);
+  const navigate = useNavigate();
+  const [password, setPassword] = useState("");
 
   useEffect(() => {
     axios
@@ -30,6 +36,28 @@ export function MemberDetail() {
   }, []);
 
   if (!member) return <Spinner />;
+
+  function handleDeleteButtonClick() {
+    axios
+      .post(`/api/member/delete`, {
+        email: member.email,
+        password: password,
+      })
+      .then((res) => {
+        console.log("success");
+        const message = res.data.message;
+        if (message) {
+          toast(message.text, { type: message.type });
+        }
+        navigate("/");
+      })
+      .catch((err) => {
+        toast("비밀번호가 일치하지 않습니다.", { type: "warning" });
+      })
+      .finally(() => {
+        console.log("finally");
+      });
+  }
 
   return (
     <Row className="justify-content-center">
@@ -54,7 +82,12 @@ export function MemberDetail() {
           </FormGroup>
         </div>
         <div>
-          <Button variant="outline-danger" size="sm" className="me-2">
+          <Button
+            variant="outline-danger"
+            size="sm"
+            className="me-2"
+            onClick={() => setModalShow(true)}
+          >
             회원 탈퇴
           </Button>
           <Button variant="outline-info" size="sm" className="me-2">
@@ -62,6 +95,30 @@ export function MemberDetail() {
           </Button>
         </div>
       </Col>
+
+      <Modal show={modalShow} onHide={() => setModalShow(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>회원 탈퇴 확인</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <FormGroup className="mb-3" controlId="password1">
+            <FormLabel>암호</FormLabel>
+            {/* TODO: type="password" */}
+            <FormControl
+              type="text"
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </FormGroup>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="outline-dark" onClick={() => setModalShow(false)}>
+            취소
+          </Button>
+          <Button variant="danger" onClick={handleDeleteButtonClick}>
+            탈퇴
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </Row>
   );
 }

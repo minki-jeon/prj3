@@ -83,4 +83,18 @@ public class MemberService {
 
         return memberDto;
     }
+
+    public void deleteById(String email) {
+        memberRepository.deleteById(email);
+    }
+
+    public MemberForm getMember(String email) {
+        Member dbData = memberRepository.findById(email).get();
+        MemberForm memberForm = new MemberForm();
+        memberForm.setEmail(dbData.getEmail());
+        memberForm.setNickName(dbData.getNickName());
+        memberForm.setInfo(dbData.getInfo());
+        memberForm.setPassword(dbData.getPassword());
+        return memberForm;
+    }
 }
