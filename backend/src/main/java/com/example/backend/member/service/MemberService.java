@@ -1,5 +1,6 @@
 package com.example.backend.member.service;
 
+import com.example.backend.member.dto.MemberDto;
 import com.example.backend.member.dto.MemberForm;
 import com.example.backend.member.dto.MemberListInfo;
 import com.example.backend.member.entity.Member;
@@ -70,5 +71,16 @@ public class MemberService {
 
     public List<MemberListInfo> list() {
         return memberRepository.findAllBy();
+    }
+
+    public MemberDto get(String email) {
+        Member dbData = memberRepository.findById(email).get();
+        MemberDto memberDto = new MemberDto();
+        memberDto.setEmail(dbData.getEmail());
+        memberDto.setNickName(dbData.getNickName());
+        memberDto.setInfo(dbData.getInfo());
+        memberDto.setInsertedAt(dbData.getInsertedAt());
+
+        return memberDto;
     }
 }
