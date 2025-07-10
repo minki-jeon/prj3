@@ -49,6 +49,11 @@ export function MemberAdd() {
       });
   }
 
+  let disabled = false;
+  if (email === "" || nickName === "" || password === "") {
+    disabled = true;
+  }
+
   return (
     <Row className="justify-content-center">
       <Col xs={12} md={8} lg={6}>
@@ -103,7 +108,7 @@ export function MemberAdd() {
           </FormGroup>
         </div>
         <div>
-          <Button onClick={handleSaveClick} disabled={isProcessing}>
+          <Button onClick={handleSaveClick} disabled={isProcessing || disabled}>
             {isProcessing && <Spinner size="sm" />}
             가입
           </Button>
