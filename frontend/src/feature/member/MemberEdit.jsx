@@ -16,7 +16,11 @@ import { toast } from "react-toastify";
 export function MemberEdit() {
   const [member, setMember] = useState(null);
   const [modalShow, setModalShow] = useState(false);
+  const [passwordModalShow, setPasswordModalShow] = useState(false);
   const [password, setPassword] = useState("");
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword1, setNewPassword1] = useState("");
+  const [newPassword2, setNewPassword2] = useState("");
   const [params] = useSearchParams();
   const navigate = useNavigate();
 
@@ -59,6 +63,8 @@ export function MemberEdit() {
     return <Spinner />;
   }
 
+  function handleChangePasswordButtonClick() {}
+
   return (
     <Row className="justify-content-center">
       <Col xs={12} md={8} lg={6}>
@@ -68,6 +74,14 @@ export function MemberEdit() {
             <FormLabel>이메일</FormLabel>
             <FormControl disabled value={member.email} />
           </FormGroup>
+        </div>
+        <div className="mb-4">
+          <Button
+            variant="outline-info"
+            onClick={() => setPasswordModalShow(true)}
+          >
+            암호 변경
+          </Button>
         </div>
         <div>
           <FormGroup controlId="nickName1" className="mb-3">
@@ -140,6 +154,53 @@ export function MemberEdit() {
             취소
           </Button>
           <Button variant="primary" onClick={handleSaveButtonClick}>
+            저장
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* 암호 변경 모달 */}
+      <Modal
+        show={passwordModalShow}
+        onHide={() => setPasswordModalShow(false)}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>암호 변경</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <FormGroup className="mb-3" controlId="password2">
+            <FormLabel>현재 암호</FormLabel>
+            <FormControl
+              type="password"
+              value={oldPassword}
+              onChange={(e) => setOldPassword(e.target.value)}
+            />
+          </FormGroup>
+          <FormGroup className="mb-3" controlId="password3">
+            <FormLabel>변경할 암호</FormLabel>
+            <FormControl
+              type="password"
+              value={newPassword1}
+              onChange={(e) => setNewPassword1(e.target.value)}
+            />
+          </FormGroup>
+          <FormGroup className="mb-3" controlId="password4">
+            <FormLabel>변경할 암호 확인</FormLabel>
+            <FormControl
+              type="password"
+              value={newPassword2}
+              onChange={(e) => setNewPassword2(e.target.value)}
+            />
+          </FormGroup>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="outline-dark"
+            onClick={() => setPasswordModalShow(false)}
+          >
+            취소
+          </Button>
+          <Button variant="primary" onClick={handleChangePasswordButtonClick}>
             저장
           </Button>
         </Modal.Footer>
