@@ -6,14 +6,17 @@ import {
   FormLabel,
   Row,
 } from "react-bootstrap";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { AuthenticationContext } from "../../common/AuthenticationContextProvider.jsx";
 
 export function MemberLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  // step2. Use the context
+  const { login } = useContext(AuthenticationContext);
   const navigate = useNavigate();
 
   function handleLogInButtonClick() {
@@ -21,7 +24,8 @@ export function MemberLogin() {
       .post("/api/member/login", { email: email, password: password })
       .then((res) => {
         const token = res.data.token;
-        localStorage.setItem("token", token);
+        // localStorage.setItem("token", token);
+        login(token);
 
         const message = res.data.message;
         if (message) {
