@@ -31,10 +31,12 @@ export function AuthenticationContextProvider({ children }) {
   // hasAccess
   // isAdmin
   const [user, setUser] = useState(null);
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
       const payload = jwtDecode(token);
+      // 토큰 정보(이메일)를 통한 회원정보 체크, nickname 가져오기
       axios.get("/api/member?email=" + payload.sub).then((res) => {
         setUser({
           email: res.data.email,
@@ -44,10 +46,12 @@ export function AuthenticationContextProvider({ children }) {
     }
   }, []);
 
+  // MemberLogin.jsx -> function handleLogInButtonClick() -> login(token)
   function login(token) {
     localStorage.setItem("token", token);
 
     const payload = jwtDecode(token);
+    // 토큰 정보(이메일)를 통한 회원정보 체크, nickname 가져오기
     axios.get("/api/member?email=" + payload.sub).then((res) => {
       setUser({
         email: res.data.email,
