@@ -2,6 +2,26 @@ import { createContext, useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 
+// 유효 기간이 지난 토큰 삭제
+const token = localStorage.getItem("token");
+if (token) {
+  const decoded = jwtDecode(token);
+  const exp = decoded.exp;
+  if (exp * 1000 < Date.now()) {
+    localStorage.removeItem("token");
+  }
+}
+
+// axios interceptor
+// 모든 axios 요청 작업에서, token이 존재하면 Authorization header에 'Bearer token' 붙이기
+axios.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
 // step1. create context
 const AuthenticationContext = createContext(null);
 
