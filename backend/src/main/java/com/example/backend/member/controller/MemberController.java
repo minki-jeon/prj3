@@ -1,9 +1,6 @@
 package com.example.backend.member.controller;
 
-import com.example.backend.member.dto.ChangePasswordForm;
-import com.example.backend.member.dto.MemberDto;
-import com.example.backend.member.dto.MemberForm;
-import com.example.backend.member.dto.MemberListInfo;
+import com.example.backend.member.dto.*;
 import com.example.backend.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +16,13 @@ import java.util.Map;
 public class MemberController {
 
     private final MemberService memberService;
+
+    @PostMapping("login")
+    public String login(@RequestBody MemberLoginForm loginForm) {
+        System.out.println(loginForm);
+
+        return null;
+    }
 
     @PutMapping("changePassword")
     public ResponseEntity<?> changePassword(@RequestBody ChangePasswordForm data) {
