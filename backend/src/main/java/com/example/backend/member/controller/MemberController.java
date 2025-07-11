@@ -4,6 +4,8 @@ import com.example.backend.member.dto.*;
 import com.example.backend.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,8 +36,11 @@ public class MemberController {
     }
 
     @PutMapping("changePassword")
-    public ResponseEntity<?> changePassword(@RequestBody ChangePasswordForm data) {
-        System.out.println("data = " + data);
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> changePassword(@RequestBody ChangePasswordForm data, Authentication authentication) {
+        if (!authentication.getName().equals(data.getEmail())) {
+            return ResponseEntity.status(403).build();
+        }
         try {
             memberService.changePassword(data);
         } catch (Exception e) {
@@ -49,8 +54,11 @@ public class MemberController {
     }
 
     @PutMapping
-    public ResponseEntity<?> update(@RequestBody MemberForm memberForm) {
-//        System.out.println(memberForm);
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> update(@RequestBody MemberForm memberForm, Authentication authentication) {
+        if (!authentication.getName().equals(memberForm.getEmail())) {
+            return ResponseEntity.status(403).build();
+        }
         try {
             memberService.update(memberForm);
         } catch (Exception e) {
@@ -65,8 +73,11 @@ public class MemberController {
     }
 
     @DeleteMapping
-    public ResponseEntity<?> deleteMember(@RequestBody MemberForm memberForm) {
-        System.out.println(memberForm);
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> deleteMember(@RequestBody MemberForm memberForm, Authentication authentication) {
+        if (!authentication.getName().equals(memberForm.getEmail())) {
+            return ResponseEntity.status(403).build();
+        }
         try {
             memberService.delete(memberForm);
         } catch (Exception e) {
@@ -84,8 +95,13 @@ public class MemberController {
     }
 
     @GetMapping(params = "email")
-    public MemberDto getMember(String email) {
-        return memberService.get(email);
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> getMember(String email, Authentication authentication) {
+        if (authentication.getName().equals(email)) {
+            return ResponseEntity.ok().body(memberService.get(email));
+        } else {
+            return ResponseEntity.status(403).build();
+        }
     }
 
     @GetMapping("list")
