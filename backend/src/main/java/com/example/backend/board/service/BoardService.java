@@ -5,6 +5,7 @@ import com.example.backend.board.repository.BoardRepository;
 import com.example.backend.board.dto.BoardDto;
 import com.example.backend.board.entity.Board;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,12 +18,17 @@ public class BoardService {
 
     private final BoardRepository boardRepository;
 
-    public void add(BoardDto dto) {
+    public void add(BoardDto dto, Authentication authentication) {
+        if (authentication == null) {
+            throw new RuntimeException("권한이 없습니다.");
+        }
+
         // Entity에 DTO의 값들을 저장하고
         Board board = new Board();
         board.setTitle(dto.getTitle());
         board.setContent(dto.getContent());
-        board.setAuthor(dto.getAuthor());
+//        board.setAuthor(dto.getAuthor());
+        board.setAuthor(authentication.getName());
 
         // Repository에서 Save 실행
         boardRepository.save(board);
@@ -37,9 +43,9 @@ public class BoardService {
         if (dto.getContent() == null || dto.getContent().trim().isBlank()) {
             return false;
         }
-        if (dto.getAuthor() == null || dto.getAuthor().trim().isBlank()) {
-            return false;
-        }
+//        if (dto.getAuthor() == null || dto.getAuthor().trim().isBlank()) {
+//            return false;
+//        }
 
         return true;
     }
