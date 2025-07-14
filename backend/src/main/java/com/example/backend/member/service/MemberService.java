@@ -23,7 +23,7 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final JwtEncoder jwtEncoder;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     public void add(MemberForm memberForm) {
 
@@ -31,7 +31,7 @@ public class MemberService {
             Member member = new Member();
             member.setEmail(memberForm.getEmail());
 //            member.setPassword(memberForm.getPassword());
-            member.setPassword(bCryptPasswordEncoder.encode(memberForm.getPassword()));
+            member.setPassword(passwordEncoder.encode(memberForm.getPassword()));
             member.setNickName(memberForm.getNickName());
             member.setInfo(memberForm.getInfo());
 
@@ -92,8 +92,10 @@ public class MemberService {
 
     public void delete(MemberForm memberForm) {
         Member dbData = memberRepository.findById(memberForm.getEmail()).get();
-        if (dbData.getPassword().equals(memberForm.getPassword())) {
+//        if (dbData.getPassword().equals(memberForm.getPassword())) {
+        if (passwordEncoder.matches(memberForm.getPassword(), dbData.getPassword())) {
             memberRepository.delete(dbData);
+            // TODO 로그아웃 처리
         } else {
             throw new RuntimeException("암호가 일치하지 않습니다.");
         }
@@ -103,7 +105,8 @@ public class MemberService {
         // 조회
         Member dbData = memberRepository.findById(memberForm.getEmail()).get();
         // 암호 확인
-        if (!dbData.getPassword().equals(memberForm.getPassword())) {
+//        if (!dbData.getPassword().equals(memberForm.getPassword())) {
+        if (passwordEncoder.matches(memberForm.getPassword(), dbData.getPassword())) {
             throw new RuntimeException("암호가 일치하지 않습니다.");
         }
         // 변경
@@ -117,7 +120,8 @@ public class MemberService {
     public void changePassword(ChangePasswordForm data) {
         Member dbData = memberRepository.findById(data.getEmail()).get();
 
-        if (dbData.getPassword().equals(data.getOldPassword())) {
+//        if (dbData.getPassword().equals(data.getOldPassword())) {
+        if (passwordEncoder.matches(data.getOldPassword(), dbData.getPassword())) {
             dbData.setPassword(data.getNewPassword());
             memberRepository.save(dbData);
         } else {
@@ -130,7 +134,8 @@ public class MemberService {
         Optional<Member> dbData = memberRepository.findById(loginForm.getEmail());
         if (dbData.isPresent()) {
             // 있으면 패스워드가 일치하는지
-            if (dbData.get().getPassword().equals(loginForm.getPassword())) {
+//            if (dbData.get().getPassword().equals(loginForm.getPassword())) {
+            if (passwordEncoder.matches(loginForm.getPassword(), dbData.get().getPassword())) {
                 // token 생성하여 반환
                 JwtClaimsSet claim = JwtClaimsSet.builder()
                         .subject(loginForm.getEmail())
