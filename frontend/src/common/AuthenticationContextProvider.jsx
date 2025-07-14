@@ -56,6 +56,7 @@ export function AuthenticationContextProvider({ children }) {
       setUser({
         email: res.data.email,
         nickName: res.data.nickName,
+        scope: payload.scp.split(" "),
       });
     });
   }
@@ -65,9 +66,25 @@ export function AuthenticationContextProvider({ children }) {
     setUser(null);
   }
 
+  function hasAccess(email) {
+    return user && user.email === email;
+  }
+
+  function isAdmin() {
+    return user && user.scope && user.scope.includes("admin");
+  }
+
   // step3. provide context
   return (
-    <AuthenticationContext value={{ user: user, login: login, logout: logout }}>
+    <AuthenticationContext
+      value={{
+        user: user,
+        login: login,
+        logout: logout,
+        hasAccess: hasAccess,
+        isAdmin: isAdmin,
+      }}
+    >
       {children}
     </AuthenticationContext>
   );
