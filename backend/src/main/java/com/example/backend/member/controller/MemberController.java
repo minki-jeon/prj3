@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -95,9 +96,10 @@ public class MemberController {
     }
 
     @GetMapping(params = "email")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isAuthenticated() or hasAuthority('SCOPE_admin')")
     public ResponseEntity<?> getMember(String email, Authentication authentication) {
-        if (authentication.getName().equals(email)) {
+        if (authentication.getName().equals(email) ||
+                authentication.getAuthorities().contains(new SimpleGrantedAuthority("SCOPE_admin"))) {
             return ResponseEntity.ok().body(memberService.get(email));
         } else {
             return ResponseEntity.status(403).build();
@@ -105,6 +107,7 @@ public class MemberController {
     }
 
     @GetMapping("list")
+    @PreAuthorize("hasAuthority('SCOPE_admin')")
     public List<MemberListInfo> list() {
         return memberService.list();
     }
