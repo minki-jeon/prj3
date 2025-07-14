@@ -73,9 +73,9 @@ export function BoardEdit() {
   if (board.content.trim() === "") {
     validate = false;
   }
-  if (board.author.trim() === "") {
-    validate = false;
-  }
+  // if (board.author.trim() === "") {
+  //   validate = false;
+  // }
 
   return (
     <Row className="justify-content-center">
@@ -105,8 +105,9 @@ export function BoardEdit() {
           <FormGroup className="mb-3" controlId="author">
             <FormLabel>작성자</FormLabel>
             <FormControl
-              value={board.author}
-              onChange={(e) => setBoard({ ...board, author: e.target.value })}
+              // value={board.author}
+              value={board.authorNickName}
+              // onChange={(e) => setBoard({ ...board, author: e.target.value })}
             />
           </FormGroup>
         </div>
