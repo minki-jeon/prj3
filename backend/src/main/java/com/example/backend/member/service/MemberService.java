@@ -95,7 +95,6 @@ public class MemberService {
 //        if (dbData.getPassword().equals(memberForm.getPassword())) {
         if (passwordEncoder.matches(memberForm.getPassword(), dbData.getPassword())) {
             memberRepository.delete(dbData);
-            // TODO 로그아웃 처리
         } else {
             throw new RuntimeException("암호가 일치하지 않습니다.");
         }
@@ -106,7 +105,7 @@ public class MemberService {
         Member dbData = memberRepository.findById(memberForm.getEmail()).get();
         // 암호 확인
 //        if (!dbData.getPassword().equals(memberForm.getPassword())) {
-        if (passwordEncoder.matches(memberForm.getPassword(), dbData.getPassword())) {
+        if (!passwordEncoder.matches(memberForm.getPassword(), dbData.getPassword())) {
             throw new RuntimeException("암호가 일치하지 않습니다.");
         }
         // 변경
@@ -122,7 +121,8 @@ public class MemberService {
 
 //        if (dbData.getPassword().equals(data.getOldPassword())) {
         if (passwordEncoder.matches(data.getOldPassword(), dbData.getPassword())) {
-            dbData.setPassword(data.getNewPassword());
+//            dbData.setPassword(data.getNewPassword());
+            dbData.setPassword(passwordEncoder.encode(data.getNewPassword()));
             memberRepository.save(dbData);
         } else {
             throw new RuntimeException("기존 패스워드가 일치하지 않습니다.");
