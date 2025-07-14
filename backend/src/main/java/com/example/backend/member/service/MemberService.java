@@ -1,7 +1,10 @@
 package com.example.backend.member.service;
 
+import com.example.backend.board.repository.BoardRepository;
 import com.example.backend.member.dto.*;
+import com.example.backend.member.entity.Auth;
 import com.example.backend.member.entity.Member;
+import com.example.backend.member.repository.AuthRepository;
 import com.example.backend.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -15,15 +18,18 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class MemberService {
 
+    private final AuthRepository authRepository;
     private final MemberRepository memberRepository;
     private final JwtEncoder jwtEncoder;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final BoardRepository boardRepository;
 
     public void add(MemberForm memberForm) {
 
@@ -94,6 +100,7 @@ public class MemberService {
         Member dbData = memberRepository.findById(memberForm.getEmail()).get();
 //        if (dbData.getPassword().equals(memberForm.getPassword())) {
         if (passwordEncoder.matches(memberForm.getPassword(), dbData.getPassword())) {
+            boardRepository.deleteByAuthor(dbData);
             memberRepository.delete(dbData);
         } else {
             throw new RuntimeException("암호가 일치하지 않습니다.");
@@ -136,12 +143,28 @@ public class MemberService {
             // 있으면 패스워드가 일치하는지
 //            if (dbData.get().getPassword().equals(loginForm.getPassword())) {
             if (passwordEncoder.matches(loginForm.getPassword(), dbData.get().getPassword())) {
+                List<Auth> authList = authRepository.findByMember(dbData.get());
+
+                // * 고전적 방법
+                /*
+                String authListString = "";
+                for (Auth auth : authList) {
+                    authListString = authListString + " " + auth.getId().getAuthName();
+                }
+                authListString = authListString.trim();
+                */
+                // 권한 조회 - stream 사용
+                String authListString = authList.stream()
+                        .map(auth -> auth.getId().getAuthName())
+                        .collect(Collectors.joining(" "));
+
                 // token 생성하여 반환
                 JwtClaimsSet claim = JwtClaimsSet.builder()
                         .subject(loginForm.getEmail())
                         .issuer("self")
                         .issuedAt(Instant.now())
                         .expiresAt(Instant.now().plusSeconds(60 * 60 * 24 * 365))
+                        .claim("scp", authListString)
                         .build();
 
                 return jwtEncoder.encode(JwtEncoderParameters.from(claim)).getTokenValue();
