@@ -3,6 +3,7 @@ package com.example.backend.board.controller;
 import com.example.backend.board.dto.BoardDto;
 import com.example.backend.board.dto.BoardListInfo;
 import com.example.backend.board.service.BoardService;
+import com.example.backend.member.dto.BoardListDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,23 +24,29 @@ public class BoardController {
     private final BoardService boardService;
 
     @PutMapping("{id}")
-    public ResponseEntity<?> updateBoard(@PathVariable Integer id, @RequestBody BoardDto boardDto) {
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> updateBoard(@PathVariable Integer id, @RequestBody BoardDto boardDto, Authentication authentication) {
         boolean result = boardService.validate(boardDto);
-        if (result) {
-            boardService.update(boardDto);
+        try {
+            if (result) {
+                boardService.update(boardDto, authentication);
 
+                return ResponseEntity.ok().body(Map.of("message",
+                        Map.of("type", "success", "text", id + " 번 게시물이 수정 되었습니다.")));
+            } else {
+                return ResponseEntity.ok().body(Map.of("message",
+                        Map.of("type", "error", "text", "입력한 내용이 유효하지 않습니다.")));
+            }
+        } catch (Exception e) {
             return ResponseEntity.ok().body(Map.of("message",
-                    Map.of("type", "success", "text", id + " 번 게시물이 수정 되었습니다.")));
-        } else {
-            return ResponseEntity.ok().body(Map.of("message",
-                    Map.of("type", "error", "text", "입력한 내용이 유효하지 않습니다.")));
+                    Map.of("type", "error", "text", e.getMessage())));
         }
-
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<?> deleteBoard(@PathVariable Integer id) {
-        boardService.deleteById(id);
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> deleteBoard(@PathVariable Integer id, Authentication authentication) {
+        boardService.deleteById(id, authentication);
         return ResponseEntity.ok().body(Map.of("message",
                 Map.of("type", "success", "text", id + " 번 게시물이 삭제 되었습니다.")));
     }
@@ -50,8 +57,13 @@ public class BoardController {
     }
 
     @GetMapping("list")
-    public List<BoardListInfo> getAllBoards() {
-        return boardService.list();
+//    public List<BoardListInfo> getAllBoards() {
+//    public List<BoardListDto> getAllBoards(
+    public Map<String, Object> getAllBoards(
+            @RequestParam(value = "q", defaultValue = "") String keyword,
+            @RequestParam(value = "p", defaultValue = "1") Integer pageNumber
+    ) {
+        return boardService.list(keyword, pageNumber);
     }
 
     @PostMapping("add")
