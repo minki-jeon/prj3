@@ -1,10 +1,35 @@
-import { Link, NavLink } from "react-router";
-import { Container, Nav, Navbar } from "react-bootstrap";
+import { Link, NavLink, useNavigate, useSearchParams } from "react-router";
+import {
+  Form,
+  Button,
+  Container,
+  FormControl,
+  InputGroup,
+  Nav,
+  Navbar,
+} from "react-bootstrap";
 import { AuthenticationContext } from "./AuthenticationContextProvider.jsx";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 
 export function AppNavBar() {
-  const { user } = useContext(AuthenticationContext);
+  const [keyword, setKeyword] = useState("");
+  const { user, isAdmin } = useContext(AuthenticationContext);
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    const q = searchParams.get("q");
+    if (q) {
+      setKeyword(q);
+    } else {
+      setKeyword("");
+    }
+  }, [searchParams]);
+
+  function handleSearchFormSubmit(e) {
+    e.preventDefault();
+    navigate("/?q=" + keyword);
+  }
 
   return (
     <div>
@@ -15,7 +40,7 @@ export function AppNavBar() {
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="me-auto">
+            <Nav>
               <Nav.Link as={NavLink} to="/">
                 HOME
               </Nav.Link>
@@ -24,12 +49,15 @@ export function AppNavBar() {
                   글작성
                 </Nav.Link>
               )}
+            </Nav>
+
+            <Nav className="order-lg-3">
               {user === null && (
                 <Nav.Link as={NavLink} to="/signup">
                   가입
                 </Nav.Link>
               )}
-              {user !== null && (
+              {isAdmin() && (
                 <Nav.Link as={NavLink} to="/member/list">
                   회원목록
                 </Nav.Link>
@@ -50,6 +78,20 @@ export function AppNavBar() {
                 </Nav.Link>
               )}
             </Nav>
+
+            <Form
+              inline="true"
+              onSubmit={handleSearchFormSubmit}
+              className="order-lg-2 mx-lg-auto"
+            >
+              <InputGroup>
+                <FormControl
+                  value={keyword}
+                  onChange={(e) => setKeyword(e.target.value)}
+                />
+                <Button type="submit">검색</Button>
+              </InputGroup>
+            </Form>
           </Navbar.Collapse>
         </Container>
       </Navbar>
