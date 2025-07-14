@@ -1,15 +1,20 @@
 package com.example.backend.board.service;
 
-import com.example.backend.board.dto.BoardListInfo;
 import com.example.backend.board.repository.BoardRepository;
 import com.example.backend.board.dto.BoardDto;
 import com.example.backend.board.entity.Board;
+import com.example.backend.member.dto.BoardListDto;
+import com.example.backend.member.entity.Member;
+import com.example.backend.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -17,6 +22,7 @@ import java.util.List;
 public class BoardService {
 
     private final BoardRepository boardRepository;
+    private final MemberRepository memberRepository;
 
     public void add(BoardDto dto, Authentication authentication) {
         if (authentication == null) {
@@ -28,7 +34,9 @@ public class BoardService {
         board.setTitle(dto.getTitle());
         board.setContent(dto.getContent());
 //        board.setAuthor(dto.getAuthor());
-        board.setAuthor(authentication.getName());
+//        board.setAuthor(authentication.getName());
+        Member author = memberRepository.findById(authentication.getName()).get();
+        board.setAuthor(author);
 
         // Repository에서 Save 실행
         boardRepository.save(board);
@@ -50,11 +58,27 @@ public class BoardService {
         return true;
     }
 
-    public List<BoardListInfo> list() {
-        return boardRepository.findAllByOrderByIdDesc();
+    //    public List<BoardListDto> list(String keyword, Integer pageNumber) {
+    public Map<String, Object> list(String keyword, Integer pageNumber) {
+//        return boardRepository.findAllByOrderByIdDesc();
+//        return boardRepository.findAllBy(keyword);
+
+        Page<BoardListDto> boardListDtoPage = boardRepository.findAllBy(keyword, PageRequest.of(pageNumber - 1, 10));
+        int totalPages = boardListDtoPage.getTotalPages();
+        int rightPageNumber = ((pageNumber - 1) / 10 + 1) * 10;
+        int leftPageNumber = rightPageNumber - 9;
+        rightPageNumber = Math.min(rightPageNumber, totalPages);
+        leftPageNumber = Math.max(leftPageNumber, 1);
+        var pageInfo = Map.of("totalPages", totalPages,
+                "rightPageNumber", rightPageNumber,
+                "leftPageNumber", leftPageNumber,
+                "currentPageNumber", pageNumber);
+
+        return Map.of("pageInfo", pageInfo, "boardList", boardListDtoPage.getContent());
     }
 
     public BoardDto getBoardById(Integer id) {
+        /*
         Board board = boardRepository.findById(id).get();
         BoardDto boardDto = new BoardDto();
         boardDto.setId(board.getId());
@@ -62,24 +86,41 @@ public class BoardService {
         boardDto.setContent(board.getContent());
         boardDto.setAuthor(board.getAuthor());
         boardDto.setInsertedAt(board.getInsertedAt());
-
+        */
+        BoardDto boardDto = boardRepository.findBoardById(id);
         return boardDto;
     }
 
-    public void deleteById(Integer id) {
-        boardRepository.deleteById(id);
+    public void deleteById(Integer id, Authentication authentication) {
+        if (authentication == null) {
+            throw new RuntimeException("권한이 없습니다.");
+        }
+        Board dbData = boardRepository.findById(id).get();
+        if (dbData.getAuthor().getEmail().equals(authentication.getName())) {
+            boardRepository.deleteById(id);
+        } else {
+            throw new RuntimeException("권한이 없습니다.");
+        }
     }
 
-    public void update(BoardDto boardDto) {
+    public void update(BoardDto boardDto, Authentication authentication) {
+        if (authentication == null) {
+            throw new RuntimeException("권한이 없습니다.");
+        }
+
         // 조회
         Board dbData = boardRepository.findById(boardDto.getId()).get();
+        if (dbData.getAuthor().getEmail().equals(authentication.getName())) {
+            // 변경
+            dbData.setTitle(boardDto.getTitle());
+            dbData.setContent(boardDto.getContent());
+//            dbData.setAuthor(boardDto.getAuthor());
 
-        // 변경
-        dbData.setTitle(boardDto.getTitle());
-        dbData.setContent(boardDto.getContent());
-        dbData.setAuthor(boardDto.getAuthor());
+            // 저장
+            boardRepository.save(dbData);
+        } else {
+            throw new RuntimeException("권한이 없습니다.");
+        }
 
-        // 저장
-        boardRepository.save(dbData);
     }
 }
