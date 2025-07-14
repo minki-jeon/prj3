@@ -4,6 +4,7 @@ import com.example.backend.member.dto.*;
 import com.example.backend.member.entity.Member;
 import com.example.backend.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
@@ -22,13 +23,15 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final JwtEncoder jwtEncoder;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public void add(MemberForm memberForm) {
 
         if (this.validate(memberForm)) {
             Member member = new Member();
             member.setEmail(memberForm.getEmail());
-            member.setPassword(memberForm.getPassword());
+//            member.setPassword(memberForm.getPassword());
+            member.setPassword(bCryptPasswordEncoder.encode(memberForm.getPassword()));
             member.setNickName(memberForm.getNickName());
             member.setInfo(memberForm.getInfo());
 
