@@ -25,6 +25,9 @@ public class CommentService {
         if (authentication == null) {
             throw new RuntimeException("권한이 없습니다.");
         }
+        if (comment.getComment().trim().isBlank()) {
+            throw new RuntimeException("내용이 없는 댓글을 작성할 수 없습니다.");
+        }
 
         Board board = boardRepository.findById(comment.getBoardId()).get();
         Member member = memberRepository.findById(authentication.getName()).get();
