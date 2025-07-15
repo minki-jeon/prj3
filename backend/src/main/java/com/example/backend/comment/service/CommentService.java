@@ -3,6 +3,7 @@ package com.example.backend.comment.service;
 import com.example.backend.board.entity.Board;
 import com.example.backend.board.repository.BoardRepository;
 import com.example.backend.comment.dto.CommentForm;
+import com.example.backend.comment.dto.CommentListDto;
 import com.example.backend.comment.entity.Comment;
 import com.example.backend.comment.repository.CommentRepository;
 import com.example.backend.member.entity.Member;
@@ -11,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -38,5 +41,10 @@ public class CommentService {
         data.setAuthor(member);
 
         commentRepository.save(data);
+    }
+
+    public List<CommentListDto> listByBoardId(Integer boardId) {
+
+        return commentRepository.listByBoardId(boardId);
     }
 }
