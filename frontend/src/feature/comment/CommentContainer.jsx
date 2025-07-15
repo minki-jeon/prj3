@@ -6,7 +6,8 @@ export function CommentContainer({ boardId }) {
     <div>
       <h3>COMMENT</h3>
       <CommentAdd boardId={boardId} />
-      <CommentList />
+      <hr />
+      <CommentList boardId={boardId} />
     </div>
   );
 }
