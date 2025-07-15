@@ -15,11 +15,12 @@ export function CommentAdd({ boardId }) {
         if (message) {
           toast(message.text, { type: message.type });
         }
+        setComment("");
       })
       .catch((err) => {
         const message = err.response.data.message;
         if (message) {
-          toast(message, { type: "danger" });
+          toast(message.text, { type: message.type });
         }
       })
       .finally(() => {});
