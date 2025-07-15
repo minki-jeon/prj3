@@ -3,6 +3,7 @@ package com.example.backend.board.service;
 import com.example.backend.board.repository.BoardRepository;
 import com.example.backend.board.dto.BoardDto;
 import com.example.backend.board.entity.Board;
+import com.example.backend.comment.repository.CommentRepository;
 import com.example.backend.member.dto.BoardListDto;
 import com.example.backend.member.entity.Member;
 import com.example.backend.member.repository.MemberRepository;
@@ -23,6 +24,7 @@ public class BoardService {
 
     private final BoardRepository boardRepository;
     private final MemberRepository memberRepository;
+    private final CommentRepository commentRepository;
 
     public void add(BoardDto dto, Authentication authentication) {
         if (authentication == null) {
@@ -97,6 +99,7 @@ public class BoardService {
         }
         Board dbData = boardRepository.findById(id).get();
         if (dbData.getAuthor().getEmail().equals(authentication.getName())) {
+            commentRepository.deleteByBoardId(id);
             boardRepository.deleteById(id);
         } else {
             throw new RuntimeException("권한이 없습니다.");
