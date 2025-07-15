@@ -1,12 +1,14 @@
-import { Button, FormControl, Spinner } from "react-bootstrap";
+import { Button, FloatingLabel, FormControl, Spinner } from "react-bootstrap";
 import { CommentList } from "./CommentList.jsx";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { AuthenticationContext } from "../../common/AuthenticationContextProvider.jsx";
 
 export function CommentAdd({ boardId }) {
   const [comment, setComment] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
+  const { user } = useContext(AuthenticationContext);
 
   function handleCommentSaveClick() {
     axios
@@ -36,13 +38,22 @@ export function CommentAdd({ boardId }) {
 
   return (
     <div>
-      <FormControl
-        className="mb-3"
-        as="textarea"
-        rows={3}
-        value={comment}
-        onChange={(e) => setComment(e.target.value)}
-      />
+      <FloatingLabel
+        label={user === null ? "로그인이 필요합니다." : "댓글을 작성하세요."}
+        controlId="commentTextarea1"
+      >
+        <FormControl
+          placeholder={
+            user === null ? "로그인이 필요합니다." : "댓글을 작성하세요."
+          }
+          className="mb-3"
+          as="textarea"
+          style={{ height: "150px" }}
+          value={comment}
+          disabled={user === null}
+          onChange={(e) => setComment(e.target.value)}
+        />
+      </FloatingLabel>
       <Button disabled={saveButtonDisabled} onClick={handleCommentSaveClick}>
         {isProcessing && <Spinner size="sm" />}
         댓글 등록
