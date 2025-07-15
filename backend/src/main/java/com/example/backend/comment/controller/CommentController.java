@@ -19,6 +19,12 @@ public class CommentController {
 
     private final CommentService commentService;
 
+    @DeleteMapping("{commentId}")
+    @PreAuthorize("isAuthenticated()")
+    public void delete(@PathVariable Integer commentId, Authentication authentication) {
+        commentService.delete(commentId, authentication);
+    }
+
     @GetMapping("board/{boardId}")
     public List<CommentListDto> list(@PathVariable Integer boardId) {
         return commentService.listByBoardId(boardId);

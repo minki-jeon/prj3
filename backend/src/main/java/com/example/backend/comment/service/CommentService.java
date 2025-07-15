@@ -47,4 +47,13 @@ public class CommentService {
 
         return commentRepository.listByBoardId(boardId);
     }
+
+    public void delete(Integer commentId, Authentication authentication) {
+        Comment comment = commentRepository.findById(commentId).get();
+        if (comment.getAuthor().getEmail().equals(authentication.getName())) {
+            commentRepository.delete(comment);
+        } else {
+            throw new RuntimeException();
+        }
+    }
 }
