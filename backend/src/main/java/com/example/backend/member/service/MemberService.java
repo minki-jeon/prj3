@@ -1,5 +1,6 @@
 package com.example.backend.member.service;
 
+import com.example.backend.board.entity.Board;
 import com.example.backend.board.repository.BoardRepository;
 import com.example.backend.comment.repository.CommentRepository;
 import com.example.backend.member.dto.*;
@@ -102,8 +103,18 @@ public class MemberService {
         Member dbData = memberRepository.findById(memberForm.getEmail()).get();
 //        if (dbData.getPassword().equals(memberForm.getPassword())) {
         if (passwordEncoder.matches(memberForm.getPassword(), dbData.getPassword())) {
+            // 회원이 쓴 댓글 지우기
             commentRepository.deleteByAuthor(dbData);
+            // 회원이 쓴 게시물에 달린 댓글 지우기
+            // 회원이 쓴 게시물 얻고
+            List<Board> byAuthor = boardRepository.findByAuthor(dbData);
+            // 그 게시물의 번호로 댓글 지우기
+            for (Board board : byAuthor) {
+                commentRepository.deleteByBoard(board);
+            }
+            // 회원이 쓴 게시물 지우기
             boardRepository.deleteByAuthor(dbData);
+            // 회원 정보 지우기
             memberRepository.delete(dbData);
         } else {
             throw new RuntimeException("암호가 일치하지 않습니다.");
