@@ -10,6 +10,8 @@ import {
 } from "react-bootstrap";
 import { AuthenticationContext } from "./AuthenticationContextProvider.jsx";
 import { useContext, useEffect, useState } from "react";
+import { FaRegUserCircle } from "react-icons/fa";
+import { BiSearchAlt2, BiSolidSearchAlt2 } from "react-icons/bi";
 
 export function AppNavBar() {
   const [keyword, setKeyword] = useState("");
@@ -74,6 +76,7 @@ export function AppNavBar() {
               )}
               {user !== null && (
                 <Nav.Link as={NavLink} to={`/member?email=${user.email}`}>
+                  <FaRegUserCircle />
                   {user.nickName}
                 </Nav.Link>
               )}
@@ -89,7 +92,9 @@ export function AppNavBar() {
                   value={keyword}
                   onChange={(e) => setKeyword(e.target.value)}
                 />
-                <Button type="submit">검색</Button>
+                <Button type="submit">
+                  <BiSearchAlt2 />
+                </Button>
               </InputGroup>
             </Form>
           </Navbar.Collapse>

@@ -13,6 +13,9 @@ import {
   Spinner,
 } from "react-bootstrap";
 import { AuthenticationContext } from "../../common/AuthenticationContextProvider.jsx";
+import { VscTrash } from "react-icons/vsc";
+import { TiPencil, TiUser } from "react-icons/ti";
+import { LuClock3 } from "react-icons/lu";
 
 export function CommentItem({ comment, isProcessing, setIsProcessing }) {
   const [deleteModalShow, setDeleteModalShow] = useState(false);
@@ -61,8 +64,14 @@ export function CommentItem({ comment, isProcessing, setIsProcessing }) {
       <div className="position-relative">
         <Card className="my-3">
           <CardHeader className="d-flex justify-content-between">
-            <div style={{ fontWeight: "bold" }}>{comment.authorNickName}</div>
-            <small>{comment.timesAgo}</small>
+            <div style={{ fontWeight: "bold" }}>
+              <TiUser />
+              {comment.authorNickName}
+            </div>
+            <small>
+              <LuClock3 />
+              {comment.timesAgo}
+            </small>
           </CardHeader>
           <CardBody>
             <div style={{ whiteSpace: "pre" }}>{comment.comment}</div>
@@ -79,7 +88,7 @@ export function CommentItem({ comment, isProcessing, setIsProcessing }) {
               className="me-2"
             >
               {isProcessing && <Spinner size="sm" />}
-              삭제
+              <VscTrash />
             </Button>
             <Button
               size="sm"
@@ -88,7 +97,7 @@ export function CommentItem({ comment, isProcessing, setIsProcessing }) {
               onClick={() => setEditModalShow(true)}
             >
               {isProcessing && <Spinner size="sm" />}
-              수정
+              <TiPencil />
             </Button>
           </div>
         )}
