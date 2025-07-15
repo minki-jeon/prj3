@@ -19,6 +19,12 @@ public class CommentController {
 
     private final CommentService commentService;
 
+    @PutMapping
+    @PreAuthorize("isAuthenticated()")
+    public void update(@RequestBody CommentForm commentForm, Authentication authentication) {
+        commentService.update(commentForm, authentication);
+    }
+
     @DeleteMapping("{commentId}")
     @PreAuthorize("isAuthenticated()")
     public void delete(@PathVariable Integer commentId, Authentication authentication) {
