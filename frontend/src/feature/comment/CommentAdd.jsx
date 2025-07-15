@@ -38,7 +38,7 @@ export function CommentAdd({ boardId, isProcessing, setIsProcessing }) {
   }
 
   return (
-    <div>
+    <div className="position-relative">
       <FloatingLabel
         label={user === null ? "로그인이 필요합니다." : "댓글을 작성하세요."}
         controlId="commentTextarea1"
@@ -55,10 +55,12 @@ export function CommentAdd({ boardId, isProcessing, setIsProcessing }) {
           onChange={(e) => setComment(e.target.value)}
         />
       </FloatingLabel>
-      <Button disabled={saveButtonDisabled} onClick={handleCommentSaveClick}>
-        {isProcessing && <Spinner size="sm" />}
-        댓글 등록
-      </Button>
+      <div className="position-absolute bottom-0 end-0 m-3">
+        <Button disabled={saveButtonDisabled} onClick={handleCommentSaveClick}>
+          {isProcessing && <Spinner size="sm" />}
+          댓글 등록
+        </Button>
+      </div>
     </div>
   );
 }
