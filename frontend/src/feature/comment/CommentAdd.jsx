@@ -5,12 +5,13 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { AuthenticationContext } from "../../common/AuthenticationContextProvider.jsx";
 
-export function CommentAdd({ boardId }) {
+export function CommentAdd({ boardId, isProcessing, setIsProcessing }) {
   const [comment, setComment] = useState("");
-  const [isProcessing, setIsProcessing] = useState(false);
+  // const [isProcessing, setIsProcessing] = useState(false);
   const { user } = useContext(AuthenticationContext);
 
   function handleCommentSaveClick() {
+    setIsProcessing(true);
     axios
       .post("/api/comment", { boardId: boardId, comment: comment })
       .then((res) => {
