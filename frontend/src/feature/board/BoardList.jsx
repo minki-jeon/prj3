@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Col, Pagination, Row, Spinner, Table } from "react-bootstrap";
+import { Badge, Col, Pagination, Row, Spinner, Table } from "react-bootstrap";
 import { useNavigate, useSearchParams } from "react-router";
 import { GrNext, GrPrevious } from "react-icons/gr";
 import { TbPlayerTrackNext, TbPlayerTrackPrev } from "react-icons/tb";
+import { TfiCommentAlt } from "react-icons/tfi";
+import { FaRegComments } from "react-icons/fa6";
 
 export function BoardList() {
   const [boardList, setBoardList] = useState(null);
@@ -83,7 +85,21 @@ export function BoardList() {
                     onClick={() => handleTableRowClick(board.id)}
                   >
                     <td>{board.id}</td>
-                    <td>{board.title}</td>
+                    <td>
+                      <div className="d-flex gap-2">
+                        <span>{board.title}</span>
+                        <span>
+                          {board.countComment > 0 && (
+                            <Badge bg="light" text="dark">
+                              <div className="d-flex gap-1">
+                                <FaRegComments />
+                                <span>{board.countComment}</span>
+                              </div>
+                            </Badge>
+                          )}
+                        </span>
+                      </div>
+                    </td>
                     {/*<td className="d-none d-md-table-cell">{board.author}</td>*/}
                     <td className="d-none d-md-table-cell">{board.nickName}</td>
                     <td className="d-none d-lg-table-cell">{board.timesAgo}</td>
