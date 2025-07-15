@@ -26,7 +26,7 @@ export function CommentContainer({ boardId }) {
 
   return (
     <div>
-      <h3>COMMENT ({commentList.length})</h3>
+      <h4 className="mb-3">COMMENT ({commentList.length})</h4>
       <CommentAdd
         boardId={boardId}
         isProcessing={isProcessing}
