@@ -1,6 +1,7 @@
 package com.example.backend.member.service;
 
 import com.example.backend.board.entity.Board;
+import com.example.backend.board.repository.BoardFileRepository;
 import com.example.backend.board.repository.BoardRepository;
 import com.example.backend.comment.repository.CommentRepository;
 import com.example.backend.like.repository.BoardLikeRepository;
@@ -35,6 +36,7 @@ public class MemberService {
     private final BoardRepository boardRepository;
     private final CommentRepository commentRepository;
     private final BoardLikeRepository boardLikeRepository;
+    private final BoardFileRepository boardFileRepository;
 
     public void add(MemberForm memberForm) {
 
@@ -107,17 +109,19 @@ public class MemberService {
         if (passwordEncoder.matches(memberForm.getPassword(), dbData.getPassword())) {
             // 회원이 쓴 댓글 지우기
             commentRepository.deleteByAuthor(dbData);
+            // 좋아요 지우기
+            boardLikeRepository.deleteByMember(dbData);
             // 회원이 쓴 게시물에 달린 댓글 지우기
             // 회원이 쓴 게시물 얻고
             List<Board> byAuthor = boardRepository.findByAuthor(dbData);
             // 그 게시물의 번호로 댓글 지우기
             for (Board board : byAuthor) {
                 commentRepository.deleteByBoard(board);
+                // 파일 지우기
+                boardFileRepository.deleteByBoard(board);
             }
             // 회원이 쓴 게시물 지우기
             boardRepository.deleteByAuthor(dbData);
-            // 좋아요 지우기
-            boardLikeRepository.deleteByMember(dbData);
             // 회원 정보 지우기
             memberRepository.delete(dbData);
         } else {
