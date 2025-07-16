@@ -5,7 +5,7 @@ import { useNavigate, useSearchParams } from "react-router";
 import { GrNext, GrPrevious } from "react-icons/gr";
 import { TbPlayerTrackNext, TbPlayerTrackPrev } from "react-icons/tb";
 import { TfiCommentAlt } from "react-icons/tfi";
-import { FaRegComments } from "react-icons/fa6";
+import { FaRegComments, FaThumbsUp } from "react-icons/fa6";
 
 export function BoardList() {
   const [boardList, setBoardList] = useState(null);
@@ -61,7 +61,10 @@ export function BoardList() {
             <Table striped={true} hover={true}>
               <thead>
                 <tr>
-                  <th style={{ width: "90px" }}>번호</th>
+                  <th style={{ width: "70px" }}>번호</th>
+                  <th style={{ width: "70px" }}>
+                    <FaThumbsUp />
+                  </th>
                   <th>제목</th>
                   <th
                     className="d-none d-md-table-cell"
@@ -85,6 +88,7 @@ export function BoardList() {
                     onClick={() => handleTableRowClick(board.id)}
                   >
                     <td>{board.id}</td>
+                    <td>{board.countLike > 0 ? board.countLike : ""}</td>
                     <td>
                       <div className="d-flex gap-2">
                         <span>{board.title}</span>
