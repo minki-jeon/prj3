@@ -8,6 +8,9 @@ import {
   FormControl,
   FormGroup,
   FormLabel,
+  Image,
+  ListGroup,
+  ListGroupItem,
   Modal,
   Row,
   Spinner,
@@ -87,6 +90,16 @@ export function BoardDetail() {
               readOnly={true}
             />
           </FormGroup>
+        </div>
+        <div className="mb-3">
+          {/*  업로드 파일 목록 조회 */}
+          <ListGroup>
+            {board.files.map((file) => (
+              <ListGroupItem key={file.name}>
+                <Image fluid src={file.path} />
+              </ListGroupItem>
+            ))}
+          </ListGroup>
         </div>
         <div>
           <FormGroup className="mb-3" controlId="author1">
