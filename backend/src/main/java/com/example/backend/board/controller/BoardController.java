@@ -1,7 +1,7 @@
 package com.example.backend.board.controller;
 
 import com.example.backend.board.dto.BoardDto;
-import com.example.backend.board.dto.BoardUpdateDto;
+import com.example.backend.board.dto.BoardUpdateForm;
 import com.example.backend.board.service.BoardService;
 import com.example.backend.board.dto.BoardAddForm;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +10,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.Map;
 
 //@Controller
@@ -24,30 +23,23 @@ public class BoardController {
 
     @PutMapping("{id}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> updateBoard(@PathVariable Integer id, BoardUpdateDto boardDto, Authentication authentication) {
-        System.out.println(boardDto);
-        System.out.println("추가 파일 =");
-        boardDto.getFiles().forEach(boardFile -> {
-            System.out.println(boardFile.getOriginalFilename());
-        });
-        System.out.println("삭제 파일==");
-        Arrays.stream(boardDto.getDeleteFiles()).forEach(System.out::println);
-        return null;
-//        boolean result = boardService.validate(boardDto);
-//        try {
-//            if (result) {
-//                boardService.update(boardDto, authentication);
-//
-//                return ResponseEntity.ok().body(Map.of("message",
-//                        Map.of("type", "success", "text", id + " 번 게시물이 수정 되었습니다.")));
-//            } else {
-//                return ResponseEntity.ok().body(Map.of("message",
-//                        Map.of("type", "error", "text", "입력한 내용이 유효하지 않습니다.")));
-//            }
-//        } catch (Exception e) {
-//            return ResponseEntity.ok().body(Map.of("message",
-//                    Map.of("type", "error", "text", e.getMessage())));
-//        }
+    public ResponseEntity<?> updateBoard(@PathVariable Integer id, BoardUpdateForm boardDto, Authentication authentication) {
+
+        boolean result = boardService.validateForUpdate(boardDto);
+        try {
+            if (result) {
+                boardService.update(boardDto, authentication);
+
+                return ResponseEntity.ok().body(Map.of("message",
+                        Map.of("type", "success", "text", id + " 번 게시물이 수정 되었습니다.")));
+            } else {
+                return ResponseEntity.ok().body(Map.of("message",
+                        Map.of("type", "error", "text", "입력한 내용이 유효하지 않습니다.")));
+            }
+        } catch (Exception e) {
+            return ResponseEntity.ok().body(Map.of("message",
+                    Map.of("type", "error", "text", e.getMessage())));
+        }
     }
 
     @DeleteMapping("{id}")
