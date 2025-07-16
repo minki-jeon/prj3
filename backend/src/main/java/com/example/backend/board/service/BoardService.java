@@ -1,6 +1,7 @@
 package com.example.backend.board.service;
 
 import com.example.backend.board.dto.BoardAddForm;
+import com.example.backend.board.dto.BoardFileDto;
 import com.example.backend.board.entity.BoardFile;
 import com.example.backend.board.entity.BoardFileId;
 import com.example.backend.board.repository.BoardFileRepository;
@@ -23,6 +24,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -151,8 +153,20 @@ public class BoardService {
         boardDto.setAuthor(board.getAuthor());
         boardDto.setInsertedAt(board.getInsertedAt());
         */
-        BoardDto boardDto = boardRepository.findBoardById(id);
-        return boardDto;
+        BoardDto board = boardRepository.findBoardById(id);
+
+        List<BoardFile> fileList = boardFileRepository.findByBoardId(id);
+        List<BoardFileDto> files = new ArrayList<>();
+        for (BoardFile boardFile : fileList) {
+            BoardFileDto fileDto = new BoardFileDto();
+            fileDto.setName(boardFile.getId().getName());
+            fileDto.setPath("http://localhost:8081/boardFile/" + id + "/" + boardFile.getId().getName());
+            files.add(fileDto);
+        }
+
+        board.setFiles(files);
+
+        return board;
     }
 
     public void deleteById(Integer id, Authentication authentication) {
