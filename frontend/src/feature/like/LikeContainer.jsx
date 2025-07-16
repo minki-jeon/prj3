@@ -36,9 +36,15 @@ export function LikeContainer({ boardId }) {
 
   return (
     <div className="d-flex gap-2 h2">
-      <div onClick={handleLikeClick}>
-        {likeInfo.liked ? <FaThumbsUp /> : <FaRegThumbsUp />}
-      </div>
+      {isProcessing ? (
+        <div>
+          <Spinner animation="grow" />
+        </div>
+      ) : (
+        <div onClick={handleLikeClick}>
+          {likeInfo.liked ? <FaThumbsUp /> : <FaRegThumbsUp />}
+        </div>
+      )}
       <div>{likeInfo.count}</div>
     </div>
   );
