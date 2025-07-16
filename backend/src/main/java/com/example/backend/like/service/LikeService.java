@@ -2,6 +2,7 @@ package com.example.backend.like.service;
 
 import com.example.backend.board.entity.Board;
 import com.example.backend.board.repository.BoardRepository;
+import com.example.backend.like.dto.BoardLikeDto;
 import com.example.backend.like.dto.LikeForm;
 import com.example.backend.like.entity.BoardLike;
 import com.example.backend.like.entity.BoardLikeId;
@@ -52,5 +53,19 @@ public class LikeService {
 
         }
 
+    }
+
+    public BoardLikeDto get(Integer boardId, Authentication authentication) {
+        Long count = boardLikeRepository.countByBoardId(boardId);
+        Boolean liked = false;
+        if (authentication != null) {
+            var row = boardLikeRepository.findByBoardIdAndMemberEmail(boardId, authentication.getName());
+            liked = row.isPresent();
+        }
+        BoardLikeDto boardLikeDto = new BoardLikeDto();
+        boardLikeDto.setCount(count);
+        boardLikeDto.setLiked(liked);
+
+        return boardLikeDto;
     }
 }

@@ -1,9 +1,23 @@
 import { FaRegThumbsUp, FaThumbsUp } from "react-icons/fa6";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Spinner } from "react-bootstrap";
 
 export function LikeContainer({ boardId }) {
   const [isProcessing, setIsProcessing] = useState(false);
+  const [likeInfo, setLikeInfo] = useState(null);
+
+  useEffect(() => {
+    if (!isProcessing) {
+      axios
+        .get(`/api/like/board/${boardId}`)
+        .then((res) => {
+          setLikeInfo(res.data);
+        })
+        .catch((err) => console.log(err))
+        .finally(() => {});
+    }
+  }, [isProcessing]);
 
   function handleLikeClick() {
     setIsProcessing(true);
@@ -16,13 +30,16 @@ export function LikeContainer({ boardId }) {
       });
   }
 
+  if (!likeInfo) {
+    return <Spinner />;
+  }
+
   return (
     <div className="d-flex gap-2 h2">
       <div onClick={handleLikeClick}>
-        <FaRegThumbsUp />
-        <FaThumbsUp />
+        {likeInfo.liked ? <FaThumbsUp /> : <FaRegThumbsUp />}
       </div>
-      <div>00</div>
+      <div>{likeInfo.count}</div>
     </div>
   );
 }
