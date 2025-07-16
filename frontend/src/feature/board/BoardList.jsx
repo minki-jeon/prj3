@@ -5,7 +5,7 @@ import { useNavigate, useSearchParams } from "react-router";
 import { GrNext, GrPrevious } from "react-icons/gr";
 import { TbPlayerTrackNext, TbPlayerTrackPrev } from "react-icons/tb";
 import { TfiCommentAlt } from "react-icons/tfi";
-import { FaRegComments, FaThumbsUp } from "react-icons/fa6";
+import { FaRegComments, FaRegImages, FaThumbsUp } from "react-icons/fa6";
 
 export function BoardList() {
   const [boardList, setBoardList] = useState(null);
@@ -92,12 +92,25 @@ export function BoardList() {
                     <td>
                       <div className="d-flex gap-2">
                         <span>{board.title}</span>
+                        {/* 댓글 갯수 */}
                         <span>
                           {board.countComment > 0 && (
                             <Badge bg="light" text="dark">
                               <div className="d-flex gap-1">
                                 <FaRegComments />
                                 <span>{board.countComment}</span>
+                              </div>
+                            </Badge>
+                          )}
+                        </span>
+
+                        {/*  파일 갯수 */}
+                        <span>
+                          {board.countFile > 0 && (
+                            <Badge bg="info">
+                              <div className="d-flex gap-1">
+                                <FaRegImages />
+                                <span>{board.countFile}</span>
                               </div>
                             </Badge>
                           )}
