@@ -7,7 +7,7 @@ export function CommentList({ commentList, isProcessing, setIsProcessing }) {
   return (
     <div>
       {commentList.map((comment) => (
-        <div>
+        <div key={comment.id}>
           <CommentItem
             setIsProcessing={setIsProcessing}
             isProcessing={isProcessing}
