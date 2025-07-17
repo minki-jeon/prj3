@@ -80,7 +80,7 @@ public class MemberController {
             return ResponseEntity.status(403).build();
         }
         try {
-            memberService.delete(memberForm);
+            memberService.delete(memberForm, authentication);
         } catch (Exception e) {
             e.printStackTrace();
             String message = e.getMessage();
