@@ -196,7 +196,8 @@ public class BoardService {
         for (BoardFile boardFile : fileList) {
             BoardFileDto fileDto = new BoardFileDto();
             fileDto.setName(boardFile.getId().getName());
-            fileDto.setPath("http://localhost:8081/boardFile/" + id + "/" + boardFile.getId().getName());
+//            fileDto.setPath("http://localhost:8081/boardFile/" + id + "/" + boardFile.getId().getName());
+            fileDto.setPath(imagePrefix + "prj3/board/" + id + "/" + boardFile.getId().getName());
             files.add(fileDto);
         }
 
