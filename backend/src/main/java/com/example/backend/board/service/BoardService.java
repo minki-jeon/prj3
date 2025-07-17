@@ -109,8 +109,12 @@ public class BoardService {
                     // repository
                     boardFileRepository.save(boardFile);
 
+                    // AWS s3 파일 업로드
+                    String objectKey = "prj3/board/" + board.getId() + "/" + file.getOriginalFilename();
+                    uploadFile(file, objectKey);
+
+/*
                     // 실제 파일 server(local) disk 저장
-                    // TODO : AWS S3 에 파일 저장
                     // 1) ../Temp/prj3/boardFile 에서 '게시물 번호'이름의 폴더 생성
                     File folder = new File("D:/01.private_work/Choongang/workspaces/Temp/prj3/boardFile/" + board.getId());
                     if (!folder.exists()) {
@@ -133,7 +137,7 @@ public class BoardService {
                         e.printStackTrace();
                         throw new RuntimeException(e);
                     }
-
+*/
 
                 }
             }
