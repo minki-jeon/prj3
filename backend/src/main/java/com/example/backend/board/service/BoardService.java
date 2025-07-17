@@ -281,12 +281,17 @@ public class BoardService {
                 boardFileId.setName(file);
                 boardFileRepository.deleteById(boardFileId);
 
+                /*
                 // C:/Temp/prj3/boardFile/2324/tiger.jpg 지우고
                 File targetFile
                         = new File("D:/01.private_work/Choongang/workspaces/Temp/prj3/boardFile/" + dbData.getId() + "/" + file);
                 if (targetFile.exists()) {
                     targetFile.delete();
                 }
+                */
+                // s3의 파일 지우기
+                String objectKey = "prj3/board/" + dbData.getId() + "/" + file;
+                deleteFile(objectKey);
 
 
             }
