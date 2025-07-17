@@ -181,7 +181,16 @@ public class BoardService {
             // 좋아요 삭제
             boardLikeRepository.deleteByBoard(dbData);
 
-            // 파일 삭제
+            // 실제 (disk)저장되어 있는 파일 삭제 (게시글의 파일 목록 조회하고 삭제)
+            List<String> fileNames = boardFileRepository.listFileNameByBoard(dbData);
+            for (String fileName : fileNames) {
+                File f = new File("D:/01.private_work/Choongang/workspaces/Temp/prj3/boardFile/" + dbData.getId() + "/" + fileName);
+                if (f.exists()) {
+                    f.delete();
+                }
+            }
+
+            // 파일 DB기록 삭제
             boardFileRepository.deleteByBoard(dbData);
 
             // 댓글 삭제
