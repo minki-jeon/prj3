@@ -215,6 +215,7 @@ public class BoardService {
             // 좋아요 삭제
             boardLikeRepository.deleteByBoard(dbData);
 
+            /*
             // 실제 (disk)저장되어 있는 파일 삭제 (게시글의 파일 목록 조회하고 삭제)
             List<String> fileNames = boardFileRepository.listFileNameByBoard(dbData);
             for (String fileName : fileNames) {
@@ -222,6 +223,13 @@ public class BoardService {
                 if (f.exists()) {
                     f.delete();
                 }
+            }
+            */
+            // s3 파일 삭제
+            List<String> fileNames = boardFileRepository.listFileNameByBoard(dbData);
+            for (String fileName : fileNames) {
+                String objectKey = "prj3/board/" + dbData.getId() + "/" + fileName;
+                deleteFile(objectKey);
             }
 
             // 파일 DB기록 삭제
