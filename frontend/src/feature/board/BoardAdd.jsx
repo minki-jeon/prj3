@@ -66,6 +66,10 @@ export function BoardAdd() {
   //   validate = false;
   // }
 
+  if (!user) {
+    return <Spinner />;
+  }
+
   return (
     <Row className="justify-content-center">
       <Col xs={12} md={8} lg={6}>
