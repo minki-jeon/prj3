@@ -37,7 +37,9 @@ jobs:
       # BACKEND BUILD
       - name: build spring boot app
         working-directory: ./backend
-        run: ./gradlew bootJar
+        run: |
+          chmod +x gradlew
+          ./gradlew bootJar
 
       # deploy to ec2
       - name: save ssh key file
